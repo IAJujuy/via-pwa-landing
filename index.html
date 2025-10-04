@@ -1,83 +1,122 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Función VIA – Landing</title>
-  <meta name="description" content="Activa la Función VIA como PWA en tu dispositivo.">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0b7cff">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Función VIA — Instalar</title>
+  <meta name="description" content="Instalá la Función VIA como PWA en tu dispositivo (Android/iPhone).">
+
+  <!-- Manifest + íconos (RUTAS RELATIVAS PARA PROJECT PAGES) -->
+  <link rel="manifest" href="./manifest.webmanifest?v=2" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=2" />
+  <meta name="theme-color" content="#0b7cff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <style>
     :root { --bg:#0b1220; --card:#131a2a; --text:#ffffff; --muted:#8ea1c0; --accent:#0b7cff; }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
-    .wrap{max-width:940px;margin:0 auto;padding:24px}
-    .card{background:var(--card);border-radius:20px;padding:24px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
-    h1{margin:0 0 8px 0;font-size:28px}
-    p{margin:8px 0;color:var(--muted);line-height:1.5}
-    .cta{display:inline-flex;gap:10px;align-items:center;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);cursor:pointer;user-select:none}
-    .cta:active{transform:translateY(1px)}
-    .row{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
-    .hidden{display:none}
-    .badge{display:inline-block;background:rgba(11,124,255,.18);color:#cfe2ff;padding:4px 8px;border-radius:999px;font-size:12px}
-    .steps{margin-top:12px}
-    .steps li{margin:8px 0}
-    #installed{display:none;margin:16px 0;padding:10px;border-left:3px solid var(--accent);background:rgba(11,124,255,.1);border-radius:8px}
-    #msg{margin-top:10px;font-size:14px;color:#b4c7e7}
-    a.link{color:#a6c8ff}
-    footer{margin-top:24px;color:#6f84a8;font-size:12px;opacity:.85}
+    * { box-sizing: border-box }
+    body { margin:0; background:var(--bg); color:var(--text); font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif }
+    .wrap { max-width: 940px; margin: 0 auto; padding: 24px }
+    .card { background: var(--card); border-radius: 20px; padding: 24px; box-shadow: 0 6px 24px rgba(0,0,0,.25) }
+    h1 { margin: 0 0 8px 0; font-size: 28px }
+    p  { margin: 8px 0; color: var(--muted) }
+    .row { display:flex; flex-wrap:wrap; gap:12px; margin-top: 8px }
+    .cta { display:inline-flex; gap:10px; align-items:center; padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.15); cursor:pointer; user-select:none; text-decoration:none; color:var(--text) }
+    .cta:active{ transform: translateY(1px) }
+    .steps { margin-top: 10px; color: var(--muted) }
+    .steps li { margin: 6px 0 }
+    .note { margin-top:12px; padding:10px; border-left:3px solid var(--accent); background:rgba(11,124,255,.10); border-radius:8px }
+    footer{ margin-top:16px; color:#6f84a8; font-size:12px; opacity:.85 }
+    .hide{ display:none }
   </style>
+
+  <!-- GA4 (opcional). Reemplaza G-XXXX y descomenta
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXX', { 'anonymize_ip': true, 'transport_type': 'beacon' });
+  </script>
+  -->
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <span class="badge">VIA • Avatars para una vida digital saludable</span>
-      <h1>Activa la <strong>Función VIA</strong> en tu dispositivo</h1>
-      <p>Esta landing detecta tu plataforma y te guía para instalar la PWA (aplicación web progresiva) o abrir la demo.</p>
+      <h1>Instalá <strong>Función VIA</strong></h1>
+      <p>Android e iPhone en 10 segundos.</p>
 
-      <div id="installed">La app ya está instalada. Busca <strong>VIA</strong> en tu pantalla principal.</div>
+      <div class="row">
+        <!-- Android -->
+        <button id="android-cta" class="cta" style="display:none">Instalar en Android</button>
+        <a id="android-fallback" class="cta hide" href="./?demo=1">Abrir en Android</a>
 
-      <!-- Android -->
-      <section id="android-block" class="hidden">
-        <h2>Android</h2>
-        <p>Si el navegador permite instalación, verás el botón abajo. De lo contrario, usa el menú ⋮ &rarr; <em>Instalar App</em>.</p>
-        <div class="row">
-          <button id="android-cta" class="cta" style="display:none">Instalar Función VIA</button>
-          <a class="cta" href="/?demo=1">Abrir demo</a>
-        </div>
-        <div id="msg"></div>
-      </section>
+        <!-- iOS -->
+        <a id="ios-cta" class="cta hide" href="./?demo=1">Instalar en iPhone</a>
 
-      <!-- iOS -->
-      <section id="ios-block" class="hidden">
-        <h2>iPhone / iPad (Safari)</h2>
-        <ol class="steps">
-          <li>Toca el botón <strong>Compartir</strong> en Safari.</li>
-          <li>Elige <strong>Agregar a pantalla de inicio</strong>.</li>
-          <li>Confirma el nombre <em>VIA</em> y toca <strong>Agregar</strong>.</li>
+        <!-- Desktop -->
+        <a id="desktop-cta" class="cta hide" href="./?demo=1">Abrir en Desktop</a>
+      </div>
+
+      <div id="ios-steps" class="steps hide">
+        <ol>
+          <li>Abrí en Safari.</li>
+          <li>Tocá <strong>Compartir</strong>.</li>
+          <li>Elegí <strong>Agregar a pantalla de inicio</strong>.</li>
         </ol>
-        <div class="row">
-          <a class="cta" href="/?demo=1">Abrir demo</a>
-        </div>
-      </section>
+      </div>
 
-      <!-- Desktop -->
-      <section id="desktop-block" class="hidden">
-        <h2>Escritorio</h2>
-        <p>Puedes abrir la demo o instalar como app desde el icono de instalación del navegador.</p>
-        <div class="row">
-          <a class="cta" href="/?demo=1">Abrir demo</a>
-        </div>
-      </section>
+      <div id="installed" class="note hide">
+        Ya está instalada. Buscá <strong>VIA</strong> en tu pantalla de inicio.
+      </div>
 
       <footer>
-        <p>Consejo: sirve esta página por <strong>HTTPS</strong>. El QR debe apuntar a la URL pública de esta landing.</p>
+        <p>Consejo: si no ves el botón en Android, abrí el menú (⋮) → <em>Instalar app</em>. En iPhone usá <em>Agregar a pantalla de inicio</em>.</p>
       </footer>
     </div>
   </div>
-  <script src="/install.js"></script>
-</body>
-</html>
+
+  <!-- Script de plataforma + registro SW (rutas relativas) -->
+  <script>
+    let deferredPrompt;
+
+    function isIOS(){
+      const ua = navigator.userAgent;
+      return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+    function isAndroid(){ return /Android/i.test(navigator.userAgent); }
+    function isStandalone(){
+      return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('android-cta');
+      if (btn) btn.style.display = 'inline-flex';
+    });
+
+    async function triggerInstall(){
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('android-cta').style.display = 'none';
+    }
+
+    function routeByPlatform(){
+      const installed = document.getElementById('installed');
+      const iosCta = document.getElementById('ios-cta');
+      const iosSteps = document.getElementById('ios-steps');
+      const androidFallback = document.getElementById('android-fallback');
+      const desktopCta = document.getElementById('desktop-cta');
+
+      if (isStandalone()){
+        installed.classList.remove('hide');
+        return;
+      }
+      if (isIOS()){
+        iosCta.classList.remove('hide');
+        iosSteps.classList.remove('hide');
+      } else if (isAndroid()
