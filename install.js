@@ -1,17 +1,17 @@
-// install.js — compatible con GitHub Project Pages (subcarpeta)
-// Cambios clave: registro del SW con ruta relativa ./sw.js?v=2
+// install.js — Project Pages listo (subcarpeta) + soporte de IDs viejos/nuevos
 let deferredPrompt;
 
 function isIOS() {
-  const ua = window.navigator.userAgent;
+  const ua = navigator.userAgent;
   return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
-function isAndroid() {
-  return /Android/i.test(navigator.userAgent);
-}
+function isAndroid() { return /Android/i.test(navigator.userAgent); }
 function isStandalone() {
-  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 }
+
+function show(el){ if(el) el.classList ? el.classList.remove('hide') : (el.style.display='block'); }
+function hide(el){ if(el) el.classList ? el.classList.add('hide') : (el.style.display='none'); }
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -30,43 +30,35 @@ async function triggerInstall() {
   if (androidCta) androidCta.style.display = 'none';
 
   const msg = document.getElementById('msg');
-  if (msg) msg.textContent = (choice.outcome === 'accepted')
-    ? 'Instalación aceptada'
-    : 'Instalación descartada';
+  if (msg) msg.textContent = (choice.outcome === 'accepted') ? 'Instalación aceptada' : 'Instalación descartada';
 }
 
 function routeByPlatform() {
+  // IDs “viejos” (bloques)
   const iosBlock = document.getElementById('ios-block');
   const androidBlock = document.getElementById('android-block');
   const desktopBlock = document.getElementById('desktop-block');
+
+  // IDs “nuevos” (CTAs arriba del fold)
+  const iosCta = document.getElementById('ios-cta');
+  const iosSteps = document.getElementById('ios-steps');
+  const androidFallback = document.getElementById('android-fallback');
+  const desktopCta = document.getElementById('desktop-cta');
+
   const installedNote = document.getElementById('installed');
 
-  // Oculta todo por defecto si existen
-  [iosBlock, androidBlock, desktopBlock].forEach(el => { if (el) el.style.display = 'none'; });
+  // Ocultar todo por defecto si existen
+  [iosBlock, androidBlock, desktopBlock, iosCta, iosSteps, androidFallback, desktopCta].forEach(hide);
 
-  if (isStandalone()) {
-    if (installedNote) installedNote.style.display = 'block';
-    return;
-  }
+  if (isStandalone()) { show(installedNote); return; }
 
   if (isIOS()) {
-    if (iosBlock) iosBlock.style.display = 'block';
+    show(iosBlock);    // viejo
+    show(iosCta);      // nuevo
+    show(iosSteps);    // nuevo
   } else if (isAndroid()) {
-    if (androidBlock) androidBlock.style.display = 'block';
+    show(androidBlock);     // viejo
+    show(androidFallback);  // nuevo (por si no aparece el prompt)
   } else {
-    if (desktopBlock) desktopBlock.style.display = 'block';
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  routeByPlatform();
-
-  // REGISTRO DEL SERVICE WORKER — ruta relativa + versión para forzar actualización
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=2')
-      .catch(err => console.error('SW register failed:', err));
-  }
-
-  const installBtn = document.getElementById('android-cta');
-  if (installBtn) installBtn.addEventListener('click', triggerInstall);
-});
+    show(desktopBlock); // viejo
+    show(desktopCta);   // nu
