@@ -1,3 +1,5 @@
+// install.js — compatible con GitHub Project Pages (subcarpeta)
+// Cambios clave: registro del SW con ruta relativa ./sw.js?v=2
 let deferredPrompt;
 
 function isIOS() {
@@ -15,7 +17,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   const androidCta = document.getElementById('android-cta');
-  androidCta.style.display = 'inline-flex';
+  if (androidCta) androidCta.style.display = 'inline-flex';
 });
 
 async function triggerInstall() {
@@ -23,45 +25,48 @@ async function triggerInstall() {
   deferredPrompt.prompt();
   const choice = await deferredPrompt.userChoice;
   deferredPrompt = null;
+
   const androidCta = document.getElementById('android-cta');
-  androidCta.style.display = 'none';
+  if (androidCta) androidCta.style.display = 'none';
+
   const msg = document.getElementById('msg');
-  msg.textContent = (choice.outcome === 'accepted') ? 'Instalación aceptada' : 'Instalación descartada';
+  if (msg) msg.textContent = (choice.outcome === 'accepted')
+    ? 'Instalación aceptada'
+    : 'Instalación descartada';
 }
 
 function routeByPlatform() {
   const iosBlock = document.getElementById('ios-block');
   const androidBlock = document.getElementById('android-block');
   const desktopBlock = document.getElementById('desktop-block');
+  const installedNote = document.getElementById('installed');
+
+  // Oculta todo por defecto si existen
+  [iosBlock, androidBlock, desktopBlock].forEach(el => { if (el) el.style.display = 'none'; });
 
   if (isStandalone()) {
-    document.getElementById('installed').style.display = 'block';
-    iosBlock.style.display = 'none';
-    androidBlock.style.display = 'none';
-    desktopBlock.style.display = 'none';
+    if (installedNote) installedNote.style.display = 'block';
     return;
   }
 
   if (isIOS()) {
-    iosBlock.style.display = 'block';
-    androidBlock.style.display = 'none';
-    desktopBlock.style.display = 'none';
+    if (iosBlock) iosBlock.style.display = 'block';
   } else if (isAndroid()) {
-    iosBlock.style.display = 'none';
-    androidBlock.style.display = 'block';
-    desktopBlock.style.display = 'none';
+    if (androidBlock) androidBlock.style.display = 'block';
   } else {
-    iosBlock.style.display = 'none';
-    androidBlock.style.display = 'none';
-    desktopBlock.style.display = 'block';
+    if (desktopBlock) desktopBlock.style.display = 'block';
   }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   routeByPlatform();
+
+  // REGISTRO DEL SERVICE WORKER — ruta relativa + versión para forzar actualización
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('./sw.js?v=2')
+      .catch(err => console.error('SW register failed:', err));
   }
+
   const installBtn = document.getElementById('android-cta');
-  installBtn.addEventListener('click', triggerInstall);
+  if (installBtn) installBtn.addEventListener('click', triggerInstall);
 });
