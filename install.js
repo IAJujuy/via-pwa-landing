@@ -10,8 +10,8 @@ function isStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 }
 
-function show(el){ if(el) el.classList ? el.classList.remove('hide') : (el.style.display='block'); }
-function hide(el){ if(el) el.classList ? el.classList.add('hide') : (el.style.display='none'); }
+function show(el){ if (el) el.classList ? el.classList.remove('hide') : (el.style.display = 'block'); }
+function hide(el){ if (el) el.classList ? el.classList.add('hide') : (el.style.display = 'none'); }
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -47,7 +47,7 @@ function routeByPlatform() {
 
   const installedNote = document.getElementById('installed');
 
-  // Ocultar todo por defecto si existen
+  // Ocultar todo de base
   [iosBlock, androidBlock, desktopBlock, iosCta, iosSteps, androidFallback, desktopCta].forEach(hide);
 
   if (isStandalone()) { show(installedNote); return; }
@@ -58,7 +58,22 @@ function routeByPlatform() {
     show(iosSteps);    // nuevo
   } else if (isAndroid()) {
     show(androidBlock);     // viejo
-    show(androidFallback);  // nuevo (por si no aparece el prompt)
+    show(androidFallback);  // nuevo (si no aparece el prompt)
   } else {
     show(desktopBlock); // viejo
-    show(desktopCta);   // nu
+    show(desktopCta);   // nuevo
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  routeByPlatform();
+
+  // Service Worker — ruta relativa + versión para romper caché
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js?v=3')
+      .catch(err => console.error('SW register failed:', err));
+  }
+
+  const installBtn = document.getElementById('android-cta');
+  if (installBtn) installBtn.addEventListener('click', triggerInstall);
+});
