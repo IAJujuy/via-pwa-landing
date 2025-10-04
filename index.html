@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Función VIA – Landing</title>
+  <meta name="description" content="Activa la Función VIA como PWA en tu dispositivo.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0b7cff">
+  <style>
+    :root { --bg:#0b1220; --card:#131a2a; --text:#ffffff; --muted:#8ea1c0; --accent:#0b7cff; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+    .wrap{max-width:940px;margin:0 auto;padding:24px}
+    .card{background:var(--card);border-radius:20px;padding:24px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+    h1{margin:0 0 8px 0;font-size:28px}
+    p{margin:8px 0;color:var(--muted);line-height:1.5}
+    .cta{display:inline-flex;gap:10px;align-items:center;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);cursor:pointer;user-select:none}
+    .cta:active{transform:translateY(1px)}
+    .row{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
+    .hidden{display:none}
+    .badge{display:inline-block;background:rgba(11,124,255,.18);color:#cfe2ff;padding:4px 8px;border-radius:999px;font-size:12px}
+    .steps{margin-top:12px}
+    .steps li{margin:8px 0}
+    #installed{display:none;margin:16px 0;padding:10px;border-left:3px solid var(--accent);background:rgba(11,124,255,.1);border-radius:8px}
+    #msg{margin-top:10px;font-size:14px;color:#b4c7e7}
+    a.link{color:#a6c8ff}
+    footer{margin-top:24px;color:#6f84a8;font-size:12px;opacity:.85}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <span class="badge">VIA • Avatars para una vida digital saludable</span>
+      <h1>Activa la <strong>Función VIA</strong> en tu dispositivo</h1>
+      <p>Esta landing detecta tu plataforma y te guía para instalar la PWA (aplicación web progresiva) o abrir la demo.</p>
+
+      <div id="installed">La app ya está instalada. Busca <strong>VIA</strong> en tu pantalla principal.</div>
+
+      <!-- Android -->
+      <section id="android-block" class="hidden">
+        <h2>Android</h2>
+        <p>Si el navegador permite instalación, verás el botón abajo. De lo contrario, usa el menú ⋮ &rarr; <em>Instalar App</em>.</p>
+        <div class="row">
+          <button id="android-cta" class="cta" style="display:none">Instalar Función VIA</button>
+          <a class="cta" href="/?demo=1">Abrir demo</a>
+        </div>
+        <div id="msg"></div>
+      </section>
+
+      <!-- iOS -->
+      <section id="ios-block" class="hidden">
+        <h2>iPhone / iPad (Safari)</h2>
+        <ol class="steps">
+          <li>Toca el botón <strong>Compartir</strong> en Safari.</li>
+          <li>Elige <strong>Agregar a pantalla de inicio</strong>.</li>
+          <li>Confirma el nombre <em>VIA</em> y toca <strong>Agregar</strong>.</li>
+        </ol>
+        <div class="row">
+          <a class="cta" href="/?demo=1">Abrir demo</a>
+        </div>
+      </section>
+
+      <!-- Desktop -->
+      <section id="desktop-block" class="hidden">
+        <h2>Escritorio</h2>
+        <p>Puedes abrir la demo o instalar como app desde el icono de instalación del navegador.</p>
+        <div class="row">
+          <a class="cta" href="/?demo=1">Abrir demo</a>
+        </div>
+      </section>
+
+      <footer>
+        <p>Consejo: sirve esta página por <strong>HTTPS</strong>. El QR debe apuntar a la URL pública de esta landing.</p>
+      </footer>
+    </div>
+  </div>
+  <script src="/install.js"></script>
+</body>
+</html>
